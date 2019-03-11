@@ -37,5 +37,18 @@ namespace BijenkastApi.Controllers
             _bijenkastRepository.SaveChanges();
             return CreatedAtAction(nameof(GetBijenkast), new { id = bijenkast.Id }, bijenkast;
         }
+
+        // PUT: api/Bijenkasten/1
+        [HttpPut("{id}")]
+        public IActionResult PutRecipe(int id, Bijenkast bijenkast)
+        {
+            if (id != bijenkast.Id)
+            {
+                return BadRequest();
+            }
+            _bijenkastRepository.Update(bijenkast);
+            _bijenkastRepository.SaveChanges();
+            return NoContent();
+        }
     }
 }
