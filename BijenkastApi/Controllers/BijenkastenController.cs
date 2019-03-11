@@ -29,5 +29,13 @@ namespace BijenkastApi.Controllers
             if (bijenkast == null) return NotFound();
             return bijenkast;
         }
+
+        [HttpPost]
+        public ActionResult<Bijenkast> PostBijenkast(Bijenkast bijenkast)
+        {
+            _bijenkastRepository.Add(bijenkast);
+            _bijenkastRepository.SaveChanges();
+            return CreatedAtAction(nameof(GetBijenkast), new { id = bijenkast.Id }, bijenkast;
+        }
     }
 }
