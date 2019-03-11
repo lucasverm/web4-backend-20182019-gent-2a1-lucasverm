@@ -21,5 +21,13 @@ namespace BijenkastApi.Controllers
         {
             return _bijenkastRepository.GetAll().OrderBy(r => r.Name);
         }
+
+        [HttpGet("{id}")]
+        public ActionResult<Bijenkast> GetBijenkast(int id)
+        {
+            Bijenkast bijenkast = _bijenkastRepository.GetBy(id);
+            if (bijenkast == null) return NotFound();
+            return bijenkast;
+        }
     }
 }
