@@ -50,5 +50,19 @@ namespace BijenkastApi.Controllers
             _bijenkastRepository.SaveChanges();
             return NoContent();
         }
+
+        // DELETE: api/Bijenkasten/5
+        [HttpDelete("{id}")]
+        public ActionResult<Bijenkast> DeleteRecipe(int id)
+        {
+            Bijenkast bijenkast = _bijenkastRepository.GetBy(id);
+            if (bijenkast == null)
+            {
+                return NotFound();
+            }
+            _bijenkastRepository.Delete(bijenkast);
+            _bijenkastRepository.SaveChanges();
+            return bijenkast;
+        }
     }
 }
