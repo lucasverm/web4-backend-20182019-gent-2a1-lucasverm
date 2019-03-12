@@ -2,7 +2,7 @@
 
 namespace BijenkastApi.Models
 {
-    internal interface IImkerRepository
+    public interface IImkerRepository
     {
         Imker GetBy(int id);
 

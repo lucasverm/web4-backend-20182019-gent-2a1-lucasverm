@@ -1,4 +1,5 @@
 ﻿using BijenkastApi.DTOs;
+using BijenkastApi.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -18,14 +19,14 @@ namespace BijenkastApi.Controllers
     {
         private readonly SignInManager<IdentityUser> _signInManager;
         private readonly UserManager<IdentityUser> _userManager;
-        private readonly ICustomerRepository _customerRepository;
+        private readonly IImkerRepository _imkerRepository;
         private readonly IConfiguration _config;
 
-        public AccountController(SignInManager<IdentityUser> signInManager, UserManager<IdentityUser> userManager, ICustomerRepository customerRepository, IConfiguration config)
+        public AccountController(SignInManager<IdentityUser> signInManager, UserManager<IdentityUser> userManager, IImkerRepository imkerRepository, IConfiguration config)
         {
             _signInManager = signInManager;
             _userManager = userManager;
-            _customerRepository = customerRepository;
+            _imkerRepository = imkerRepository;
             _config = config;
         }
 
@@ -69,8 +70,13 @@ namespace BijenkastApi.Controllers
                 UserName = model.Email,
                 Email = model.Email
             };
-            Customer customer = new Customer { Email = model.Email, FirstName = model.FirstName, LastName = model.LastName };
-            var result = await_userManager.CreateAsync(user, model.Password); if (result.Succeeded) { _customerRepository.Add(customer); _customerRepository.SaveChanges(); string token = GetToken(user); return Created("", token); }
+            Imker imker = new Imker { Email = model.Email, FirstName = model.FirstName, LastName = model.LastName };
+            var result = await _userManager.CreateAsync(user, model.Password);
+            if (result.Succeeded)
+            {
+                _imkerRepository.Add(imker);
+                _imkerRepository.SaveChanges(); string token = GetToken(user); return Created("", token);
+            }
             return BadRequest();
         }
     }
