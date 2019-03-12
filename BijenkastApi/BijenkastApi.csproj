@@ -5,10 +5,13 @@
     <AspNetCoreHostingModel>InProcess</AspNetCoreHostingModel>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <UserSecretsId>5eb68dc9-138f-432c-b6d5-d17fd092d32e</UserSecretsId>
+    <ApplicationIcon />
+    <Win32Resource />
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
     <NoWarn>1591;1701;1702</NoWarn>
+    <PlatformTarget>AnyCPU</PlatformTarget>
   </PropertyGroup>
 
   <ItemGroup>

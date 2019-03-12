@@ -37,5 +37,6 @@ namespace BijenkastApi.Data
 
         public DbSet<Bijenkast> Bijenkasten { get; set; }
         public DbSet<Moer> Moeren { get; set; }
+        public DbSet<Imker> Imkers { get; set; }
     }
 }
