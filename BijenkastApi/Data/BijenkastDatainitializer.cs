@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-
-namespace BijenkastApi.Data
+﻿namespace BijenkastApi.Data
 {
     public class BijenkastDatainitializer
     {

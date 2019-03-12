@@ -1,10 +1,13 @@
-﻿using BijenkastApi.Models;
+﻿using BijenkastApi.DTOs;
+using BijenkastApi.Models;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using System.Linq;
 
 namespace BijenkastApi.Controllers
 {
+    [ApiConventionType(typeof(DefaultApiConventions))]
+    [Produces("application/json")]
     [Route("api/[controller]")]
     [ApiController]
     public class BijenkastenController : ControllerBase
@@ -31,11 +34,12 @@ namespace BijenkastApi.Controllers
         }
 
         [HttpPost]
-        public ActionResult<Bijenkast> PostBijenkast(Bijenkast bijenkast)
+        public ActionResult<Bijenkast> PostBijenkast(BijenkastDTO bijenkast)
         {
-            _bijenkastRepository.Add(bijenkast);
+            Bijenkast aanTeMakenBijenkast = new Bijenkast() { Name = bijenkast.Name };
+            _bijenkastRepository.Add(aanTeMakenBijenkast);
             _bijenkastRepository.SaveChanges();
-            return CreatedAtAction(nameof(GetBijenkast), new { id = bijenkast.Id }, bijenkast;
+            return CreatedAtAction(nameof(GetBijenkast), new { id = aanTeMakenBijenkast.Id }, aanTeMakenBijenkast);
         }
 
         // PUT: api/Bijenkasten/1
