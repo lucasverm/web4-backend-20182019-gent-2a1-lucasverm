@@ -14,8 +14,6 @@ namespace BijenkastApi.Models
 
         public DateTime Created { get; set; }
 
-        //public Moer moer { get; set; }
-
         #endregion Properties
 
         #region Constructors
