@@ -1,20 +1,10 @@
-﻿using System.Collections.Generic;
-
-namespace BijenkastApi.Models
+﻿namespace BijenkastApi.Models
 {
     public interface IImkerRepository
     {
-        Imker GetBy(int id);
+        Imker GetBy(string email);
 
-        bool TryGetImker(int id, out Imker imker);
-
-        IEnumerable<Imker> GetAll();
-
-        void Add(Imker imker);
-
-        void Delete(Imker imker);
-
-        void Update(Imker imker);
+        void Add(Imker customer);
 
         void SaveChanges();
     }

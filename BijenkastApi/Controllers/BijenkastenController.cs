@@ -2,6 +2,7 @@
 using BijenkastApi.Models;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,21 +15,33 @@ namespace BijenkastApi.Controllers
     [Produces("application/json")]
     [Route("api/[controller]")]
     [ApiController]
+    [ApiConventionType(typeof(DefaultApiConventions))]
     public class BijenkastenController : ControllerBase
     {
         private readonly IBijenkastRepository _bijenkastRepository;
+        private readonly IImkerRepository _imkerRepository;
 
-        public BijenkastenController(IBijenkastRepository context)
+        public BijenkastenController(IBijenkastRepository context, IImkerRepository imkerRepository)
         {
             _bijenkastRepository = context;
+            _imkerRepository = imkerRepository;
         }
 
+        ///<summary>
+        /// Geeft alle bijenkasten terug
+        /// </summary>
+        ///<returns>De Bijenkasten</returns>
         [HttpGet]
         public IEnumerable<Bijenkast> GetBijenkasten()
         {
             return _bijenkastRepository.GetAll().OrderBy(r => r.Name);
         }
 
+        ///<summary>
+        /// Geeft 1 specifieke bijenkast terug dmv een id
+        /// </summary>
+        ///<param name="id">het id van de bijenkast</param>
+        ///<returns>De bijenkast met opgegeven id</returns>
         [HttpGet("{id}")]
         public ActionResult<Bijenkast> GetBijenkast(int id)
         {
@@ -38,6 +51,8 @@ namespace BijenkastApi.Controllers
         }
 
         [HttpPost]
+        [ProducesResponseType(StatusCodes.Status201Created)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public ActionResult<Bijenkast> PostBijenkast(BijenkastDTO bijenkast)
         {
             Bijenkast aanTeMakenBijenkast = new Bijenkast() { Name = bijenkast.Name };
@@ -48,7 +63,7 @@ namespace BijenkastApi.Controllers
 
         // PUT: api/Bijenkasten/1
         [HttpPut("{id}")]
-        public IActionResult PutRecipe(int id, Bijenkast bijenkast)
+        public IActionResult PutBijenkast(int id, Bijenkast bijenkast)
         {
             if (id != bijenkast.Id)
             {
@@ -61,7 +76,7 @@ namespace BijenkastApi.Controllers
 
         // DELETE: api/Bijenkasten/5
         [HttpDelete("{id}")]
-        public ActionResult<Bijenkast> DeleteRecipe(int id)
+        public ActionResult<Bijenkast> DeleteBijenkast(int id)
         {
             Bijenkast bijenkast = _bijenkastRepository.GetBy(id);
             if (bijenkast == null)

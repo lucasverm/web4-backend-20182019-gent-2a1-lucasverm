@@ -1,10 +1,11 @@
-﻿using BijenkastApi.Models;
+﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using BijenkastApi.Models;
 using System;
 
 namespace BijenkastApi.Data
 {
-    public class BijenkastContext : DbContext
+    public class BijenkastContext : IdentityDbContext
     {
         public BijenkastContext(DbContextOptions<BijenkastContext> options)
             : base(options)
@@ -14,29 +15,19 @@ namespace BijenkastApi.Data
         protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);
-            /*builder.Entity<Bijenkast>()
-                .HasOne(p => p.moer);
-            //.WithOne()
-            //.IsRequired();
-            // .HasForeignKey("moer"); //Shadow property*/
             builder.Entity<Bijenkast>().Property(r => r.Name).IsRequired().HasMaxLength(50);
+            builder.Entity<Imker>().Property(c => c.LastName).IsRequired().HasMaxLength(50);
+            builder.Entity<Imker>().Property(c => c.FirstName).IsRequired().HasMaxLength(50);
+            builder.Entity<Imker>().Property(c => c.Email).IsRequired().HasMaxLength(100);
 
             //Another way to seed the database
-
-            builder.Entity<Moer>().HasData(
-                    //Shadow property can be used for the foreign key, in combination with anaonymous objects
-                    new Moer { Id = 1, Name = "Queenb", gemerkt = true, geknipt = true, Geboortedag = DateTime.Today }
-
-                 );
-
             builder.Entity<Bijenkast>().HasData(
-                new Bijenkast { Id = 1, Name = "Kast1", Created = DateTime.Now },
-                 new Bijenkast { Id = 2, Name = "Kast2", Created = DateTime.Now }
+                new Bijenkast { Id = 1, Name = "Spaghetti", Created = DateTime.Now },
+                new Bijenkast { Id = 2, Name = "Tomato soup", Created = DateTime.Now }
   );
         }
 
         public DbSet<Bijenkast> Bijenkasten { get; set; }
-        public DbSet<Moer> Moeren { get; set; }
         public DbSet<Imker> Imkers { get; set; }
     }
 }

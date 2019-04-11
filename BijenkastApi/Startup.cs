@@ -1,9 +1,11 @@
 ﻿using BijenkastApi.Data;
+using BijenkastApi.Data.Repositories;
 using BijenkastApi.Models;
 using BijenkastApi.Repositories;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -11,6 +13,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
 using NSwag;
 using NSwag.SwaggerGeneration.Processors.Security;
+using System;
 using System.Text;
 
 namespace BijenkastApi
@@ -30,9 +33,34 @@ namespace BijenkastApi
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
             services.AddDbContext<BijenkastContext>(options =>
               options.UseSqlServer(Configuration.GetConnectionString("BijenkastContext")));
+
+            services.AddScoped<BijenkastDatainitializer>();
+            services.AddScoped<IBijenkastRepository, BijenkastRepository>();
+            services.AddScoped<IImkerRepository, ImkerRepository>();
+            Microsoft.IdentityModel.Logging.IdentityModelEventSource.ShowPII = true;
+            services.AddOpenApiDocument(c =>
+            {
+                c.DocumentName = "apidocs";
+                c.Title = "Bijenkast API";
+                c.Version = "v1";
+                c.Description = "The Bijenkast API documentation description.";
+                c.DocumentProcessors.Add(new SecurityDefinitionAppender("JWT Token", new SwaggerSecurityScheme
+                {
+                    Type = SwaggerSecuritySchemeType.ApiKey,
+                    Name = "Authorization",
+                    In = SwaggerSecurityApiKeyLocation.Header,
+                    Description = "Copy 'Bearer' + valid JWT token into field"
+                }));
+                c.OperationProcessors.Add(new OperationSecurityScopeProcessor("JWT Token"));
+            }); //for OpenAPI 3.0 else AddSwaggerDocument();
+
+            //no UI will be added (<-> AddDefaultIdentity)
+            services.AddIdentity<IdentityUser, IdentityRole>(cfg => cfg.User.RequireUniqueEmail = true).AddEntityFrameworkStores<BijenkastContext>();
+
             services.AddAuthentication(x =>
             {
                 x.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                x.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
             })
             .AddJwtBearer(x =>
             {
@@ -43,34 +71,36 @@ namespace BijenkastApi
                     ValidateIssuerSigningKey = true,
                     IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Configuration["Tokens:Key"])),
                     ValidateIssuer = false,
-                    ValidateAudience = false,
-                    RequireExpirationTime = true
-                    //Ensure token hasn't expired
+                    ValidateAudience = false
                 };
             });
-            services.AddOpenApiDocument();
-            services.AddScoped<BijenkastDatainitializer>();
-            services.AddScoped<IBijenkastRepository, BijenkastRepository>();
-            services.AddOpenApiDocument(c =>
+
+            services.Configure<IdentityOptions>(options =>
             {
-                c.DocumentName = "apidocs";
-                c.Title = "bijenkastAPI"; c.Version = "v1";
-                c.Description = "The bijenkastAPI documentation description.";
-                c.DocumentProcessors.Add(new SecurityDefinitionAppender("JWT Token", new SwaggerSecurityScheme
-                {
-                    Type = SwaggerSecuritySchemeType.ApiKey,
-                    Name = "Authorization",
-                    In = SwaggerSecurityApiKeyLocation.Header,
-                    Description = "Copy 'Bearer' + valid JWT token into field"
-                }));
-                c.OperationProcessors.Add(new OperationSecurityScopeProcessor("JWT Token"));
+                // Password settings.
+                options.Password.RequireDigit = true;
+                options.Password.RequireLowercase = true;
+                options.Password.RequireNonAlphanumeric = true;
+                options.Password.RequireUppercase = true;
+                options.Password.RequiredLength = 6;
+                options.Password.RequiredUniqueChars = 1;
+
+                // Lockout settings.
+                options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(5);
+                options.Lockout.MaxFailedAccessAttempts = 5;
+                options.Lockout.AllowedForNewUsers = true;
+
+                // User settings.
+                options.User.AllowedUserNameCharacters =
+                "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-._@+";
+                options.User.RequireUniqueEmail = true;
             });
 
             services.AddCors(options => options.AddPolicy("AllowAllOrigins", builder => builder.AllowAnyOrigin()));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env, BijenkastDatainitializer bijenkastDataInitializer)
+        public void Configure(IApplicationBuilder app, IHostingEnvironment env, BijenkastDatainitializer bijenkastDatainitializer)
         {
             if (env.IsDevelopment())
             {
@@ -83,12 +113,15 @@ namespace BijenkastApi
             }
 
             app.UseHttpsRedirection();
-            app.UseMvc();
+
             app.UseAuthentication();
+
+            app.UseMvc();
+
             app.UseSwaggerUi3();
             app.UseSwagger();
-            app.UseCors("AllowAllOrigins");
-            bijenkastDataInitializer.InitializeData(); //.Wait();
+
+            bijenkastDatainitializer.InitializeData().Wait();
         }
     }
 }
