@@ -21,7 +21,7 @@ namespace BijenkastApi.Data
             _dbContext.Database.EnsureDeleted();
             if (_dbContext.Database.EnsureCreated())
             {
-                Imker imker = new Imker { Email = "student@hogent.be", FirstName = "Student", LastName = "Hogent" };
+                Imker imker = new Imker { Email = "user@example.com", FirstName = "Student", LastName = "Hogent" };
                 _dbContext.Imkers.Add(imker);
                 await CreateUser(imker.Email, "TomDeBakker123!");
                 _dbContext.SaveChanges();

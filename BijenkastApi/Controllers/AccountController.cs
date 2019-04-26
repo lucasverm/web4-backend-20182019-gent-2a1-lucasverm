@@ -35,6 +35,14 @@ namespace RecipeApi.Controllers
             _config = config;
         }
 
+        [AllowAnonymous]
+        [HttpGet("checkusername")]
+        public async Task<ActionResult<Boolean>> CheckAvailableUserName(string email)
+        {
+            var user = await _userManager.FindByNameAsync(email);
+            return user == null;
+        }
+
         /// <summary>
         /// Login
         /// </summary>
@@ -56,6 +64,14 @@ namespace RecipeApi.Controllers
                 }
             }
             return BadRequest();
+        }
+
+        [AllowAnonymous]
+        [HttpGet("checkusername")]
+        public async Task<ActionResult<Boolean>> CheckAvailableUserName(string email)
+        {
+            var user = await _userManager.FindByNameAsync(email);
+            return user == null;
         }
 
         /// <summary>
