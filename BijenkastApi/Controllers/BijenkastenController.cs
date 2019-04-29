@@ -32,9 +32,9 @@ namespace BijenkastApi.Controllers
         /// </summary>
         ///<returns>De Bijenkasten</returns>
         [HttpGet]
-        public IEnumerable<Bijenkast> GetBijenkasten()
+        public IEnumerable<Bijenkast> GetBijenkasten(int imkerId)
         {
-            return _bijenkastRepository.GetAll().OrderBy(r => r.Name);
+            return _bijenkastRepository.GetAll(imkerId).OrderBy(r => r.Name);
         }
 
         ///<summary>

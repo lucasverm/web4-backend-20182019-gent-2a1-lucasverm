@@ -17,9 +17,10 @@ namespace BijenkastApi.Repositories
             _Bijenkasten = dbContext.Bijenkasten;
         }
 
-        public IEnumerable<Bijenkast> GetAll()
+        public IEnumerable<Bijenkast> GetAll(int imkerId)
         {
-            return _Bijenkasten.ToList();
+
+            return _Bijenkasten.Where(i => i.ImkerId == imkerId).ToList();
         }
 
         public Bijenkast GetBy(int id)

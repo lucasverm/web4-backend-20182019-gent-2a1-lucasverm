@@ -43,6 +43,19 @@ namespace RecipeApi.Controllers
             return user == null;
         }
 
+        [AllowAnonymous]
+        [HttpGet("loggedInUser")]
+        public ActionResult<Imker> loggedInUser(string email)
+        {
+            var user = _imkerRepository.GetBy(email);
+            if(user == null)
+            {
+                return NotFound("De Imker kon niet worden gevonden");
+
+            }
+            return user; 
+        }
+
         /// <summary>
         /// Login
         /// </summary>
@@ -63,15 +76,7 @@ namespace RecipeApi.Controllers
                     return Created("", token); //returns only the token
                 }
             }
-            return BadRequest();
-        }
-
-        [AllowAnonymous]
-        [HttpGet("checkusername")]
-        public async Task<ActionResult<Boolean>> CheckAvailableUserName(string email)
-        {
-            var user = await _userManager.FindByNameAsync(email);
-            return user == null;
+            return BadRequest("test");
         }
 
         /// <summary>
@@ -84,12 +89,12 @@ namespace RecipeApi.Controllers
         public async Task<ActionResult<String>> Register(RegisterDTO model)
         {
             IdentityUser user = new IdentityUser { UserName = model.Email, Email = model.Email };
-            Imker customer = new Imker { Email = model.Email, FirstName = model.FirstName, LastName = model.LastName };
+            Imker imker = new Imker { Email = model.Email, FirstName = model.FirstName, LastName = model.LastName };
             var result = await _userManager.CreateAsync(user, model.Password);
 
             if (result.Succeeded)
             {
-                _imkerRepository.Add(customer);
+                _imkerRepository.Add(imker);
                 _imkerRepository.SaveChanges();
                 string token = GetToken(user);
                 return Created("", token);

@@ -1,5 +1,7 @@
 ﻿using BijenkastApi.Models;
 using Microsoft.AspNetCore.Identity;
+using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Threading.Tasks;
 
@@ -21,9 +23,39 @@ namespace BijenkastApi.Data
             _dbContext.Database.EnsureDeleted();
             if (_dbContext.Database.EnsureCreated())
             {
-                Imker imker = new Imker { Email = "user@example.com", FirstName = "Student", LastName = "Hogent" };
+                
+               Bijenkast b = new Bijenkast
+                {
+                    Name = "Spaghetti",
+                    Created = DateTime.Now
+                };
+                Imker imker = new Imker { Email = "a@a.a", FirstName = "Student", LastName = "Hogent" };
+                await CreateUser(imker.Email, "Aaaaaa123!");
+                imker.bijenkasten.Add(b);
+                _dbContext.Bijenkasten.Add(b);
+                b = new Bijenkast
+                {
+                    Name = "wurtols",
+                    Created = DateTime.Now
+                };
+                _dbContext.Bijenkasten.Add(b);
+                imker.bijenkasten.Add(b);
                 _dbContext.Imkers.Add(imker);
-                await CreateUser(imker.Email, "TomDeBakker123!");
+
+                b = new Bijenkast
+                {
+                    Name = "Maca",
+                    Created = DateTime.Now
+                };
+                imker = new Imker { Email = "user2@example.com", FirstName = "Student", LastName = "Hogent" };
+                await CreateUser(imker.Email, "LucasVermeulen123!");
+                imker.bijenkasten.Add(b);
+                _dbContext.Bijenkasten.Add(b);
+                _dbContext.Imkers.Add(imker);
+
+
+
+
                 _dbContext.SaveChanges();
             }
         }

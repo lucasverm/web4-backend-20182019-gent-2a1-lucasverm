@@ -8,7 +8,7 @@ namespace BijenkastApi.Models
 
         bool TryGetBijenkast(int id, out Bijenkast bijenkast);
 
-        IEnumerable<Bijenkast> GetAll();
+        IEnumerable<Bijenkast> GetAll(int imkerId);
 
         void Add(Bijenkast bijenkast);
 

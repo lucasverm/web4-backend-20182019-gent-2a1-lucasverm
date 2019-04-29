@@ -7,22 +7,22 @@ namespace BijenkastApi.Data.Repositories
     public class ImkerRepository : IImkerRepository
     {
         private readonly BijenkastContext _context;
-        private readonly DbSet<Imker> _customers;
+        private readonly DbSet<Imker> _imkers;
 
         public ImkerRepository(BijenkastContext dbContext)
         {
             _context = dbContext;
-            _customers = dbContext.Imkers;
+            _imkers = dbContext.Imkers;
         }
 
         public Imker GetBy(string email)
         {
-            return _customers.SingleOrDefault(c => c.Email == email);
+            return _imkers.Where(c => c.Email == email).SingleOrDefault();
         }
 
         public void Add(Imker imker)
         {
-            _customers.Add(imker);
+            _imkers.Add(imker);
         }
 
         public void SaveChanges()
