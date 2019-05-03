@@ -1,8 +1,5 @@
 ﻿using BijenkastApi.Models;
 using Microsoft.AspNetCore.Identity;
-using System;
-using System.Collections.Generic;
-using System.Diagnostics;
 using System.Threading.Tasks;
 
 namespace BijenkastApi.Data

@@ -4,10 +4,8 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Net;
 
 namespace BijenkastApi.Controllers
 {
@@ -33,11 +31,11 @@ namespace BijenkastApi.Controllers
         /// </summary>
         ///<returns>De Bijenkasten</returns>
         [HttpGet]
-        public IEnumerable<Bijenkast> GetBijenkasten()
+        public ActionResult<List<Bijenkast>> GetBijenkasten()
         {
             Imker imker = _imkerRepository.GetBy(User.Identity.Name);
             if (imker == null) { return Unauthorized(); };
-            return _bijenkastRepository.GetAll(imker.ImkerId).OrderBy(r => r.naam);
+            return _bijenkastRepository.GetAll(imker.ImkerId).OrderBy(r => r.naam).ToList();
         }
 
         ///<summary>
@@ -46,11 +44,13 @@ namespace BijenkastApi.Controllers
         /// ///<param name="imkerId">het id van de imker</param>
         ///<param name="kastId">het id van de bijenkast</param>
         ///<returns>De bijenkast met opgegeven id</returns>
-        [HttpGet("{imkerId}/{kastId}")]
-        public ActionResult<Bijenkast> GetBijenkast(int imkerId, int kastId)
+        [HttpGet("{kastId}")]
+        public ActionResult<Bijenkast> GetBijenkast(int kastId)
         {
+            Imker imker = _imkerRepository.GetBy(User.Identity.Name);
+            if (imker == null) { return Unauthorized(); };
             Bijenkast bijenkast = _bijenkastRepository.GetBy(kastId);
-            if (bijenkast.imkerId != imkerId) return Unauthorized();
+            if (bijenkast.imkerId != imker.ImkerId) return Unauthorized();
             if (bijenkast == null) return NotFound();
             return bijenkast;
         }
@@ -60,6 +60,8 @@ namespace BijenkastApi.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public ActionResult<Bijenkast> PostBijenkast(BijenkastDTO bijenkast)
         {
+            Imker imker = _imkerRepository.GetBy(User.Identity.Name);
+            if (imker == null) { return Unauthorized(); };
             Bijenkast aanTeMakenBijenkast = new Bijenkast(bijenkast.naam,
             bijenkast.type, bijenkast.aantalhoningkamers, bijenkast.aantalbroedkamers, bijenkast.aantalramenperkamer, bijenkast.bijenras,
             bijenkast.moergeboortedag, bijenkast.moergeboortemaand, bijenkast.moergeboortejaar,
@@ -68,7 +70,6 @@ namespace BijenkastApi.Controllers
  bijenkast.aanmaakdag, bijenkast.aanmaakmaand, bijenkast.aanmaakjaar
 
             );
-            Imker imker = _imkerRepository.GetBy(bijenkast.imkerId);
             imker.bijenkasten.Add(aanTeMakenBijenkast);
             _bijenkastRepository.Add(aanTeMakenBijenkast);
             _imkerRepository.Update(imker);
@@ -78,12 +79,13 @@ namespace BijenkastApi.Controllers
         }
 
         // PUT: api/Bijenkasten/1
-        [HttpPut("{imkerId}/{kastId}")]
-        public ActionResult<Bijenkast> PutBijenkast(int imkerId, int kastId, BijenkastDTO bijenkast)
+        [HttpPut("{kastId}")]
+        public ActionResult<Bijenkast> PutBijenkast(int kastId, BijenkastDTO bijenkast)
         {
-            if (bijenkast.imkerId != imkerId) return Unauthorized();
+            Imker imker = _imkerRepository.GetBy(User.Identity.Name);
+            if (imker == null) { return Unauthorized(); };
             Bijenkast upTeDatenKast = _bijenkastRepository.GetBy(kastId);
-
+            if (upTeDatenKast.imkerId != imker.ImkerId) return Unauthorized();
             upTeDatenKast.naam = bijenkast.naam;
             upTeDatenKast.type = bijenkast.type;
             upTeDatenKast.aantalhoningkamers = bijenkast.aantalhoningkamers;
@@ -99,7 +101,6 @@ namespace BijenkastApi.Controllers
             upTeDatenKast.aanmaakdag = bijenkast.aanmaakdag;
             upTeDatenKast.aanmaakmaand = bijenkast.aanmaakmaand;
             upTeDatenKast.aanmaakjaar = bijenkast.aanmaakjaar;
-
             _bijenkastRepository.Update(upTeDatenKast);
             _bijenkastRepository.SaveChanges();
             return upTeDatenKast;
@@ -109,10 +110,16 @@ namespace BijenkastApi.Controllers
         [HttpDelete("{id}")]
         public ActionResult<Bijenkast> DeleteBijenkast(int id)
         {
+            Imker imker = _imkerRepository.GetBy(User.Identity.Name);
+            if (imker == null) { return Unauthorized(); };
             Bijenkast bijenkast = _bijenkastRepository.GetBy(id);
             if (bijenkast == null)
             {
                 return NotFound();
+            }
+            if (imker.ImkerId != bijenkast.imkerId)
+            {
+                return Unauthorized();
             }
             _bijenkastRepository.Delete(bijenkast);
             _bijenkastRepository.SaveChanges();

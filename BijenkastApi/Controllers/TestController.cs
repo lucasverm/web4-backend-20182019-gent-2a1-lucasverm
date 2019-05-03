@@ -42,7 +42,6 @@ namespace BijenkastApi.Controllers
             return _bijenkastRepository.GetAll(imkerId).OrderBy(r => r.naam);
         }
 
-
         ///<summary>
         /// Geeft 1 specifieke bijenkast terug dmv een id
         /// </summary>
@@ -68,10 +67,9 @@ namespace BijenkastApi.Controllers
  bijenkast.moerbevrucht,
  bijenkast.aanmaakdag, bijenkast.aanmaakmaand, bijenkast.aanmaakjaar
 
-
             );
-            Imker imker = _imkerRepository.GetBy(bijenkast.imkerId);
-            if(imker == null) { return BadRequest(); }
+            Imker imker = _imkerRepository.GetBy(User.Identity.Name);
+            if (imker == null) { return BadRequest(); }
             imker.bijenkasten.Add(aanTeMakenBijenkast);
             _bijenkastRepository.Add(aanTeMakenBijenkast);
             _imkerRepository.Update(imker);
