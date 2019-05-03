@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
@@ -32,20 +33,24 @@ namespace BijenkastApi.Controllers
         /// </summary>
         ///<returns>De Bijenkasten</returns>
         [HttpGet]
-        public IEnumerable<Bijenkast> GetBijenkasten(int imkerId)
+        public IEnumerable<Bijenkast> GetBijenkasten()
         {
-            return _bijenkastRepository.GetAll(imkerId).OrderBy(r => r.Name);
+            Imker imker = _imkerRepository.GetBy(User.Identity.Name);
+            if (imker == null) { return Unauthorized(); };
+            return _bijenkastRepository.GetAll(imker.ImkerId).OrderBy(r => r.naam);
         }
 
         ///<summary>
         /// Geeft 1 specifieke bijenkast terug dmv een id
         /// </summary>
-        ///<param name="id">het id van de bijenkast</param>
+        /// ///<param name="imkerId">het id van de imker</param>
+        ///<param name="kastId">het id van de bijenkast</param>
         ///<returns>De bijenkast met opgegeven id</returns>
-        [HttpGet("{id}")]
-        public ActionResult<Bijenkast> GetBijenkast(int id)
+        [HttpGet("{imkerId}/{kastId}")]
+        public ActionResult<Bijenkast> GetBijenkast(int imkerId, int kastId)
         {
-            Bijenkast bijenkast = _bijenkastRepository.GetBy(id);
+            Bijenkast bijenkast = _bijenkastRepository.GetBy(kastId);
+            if (bijenkast.imkerId != imkerId) return Unauthorized();
             if (bijenkast == null) return NotFound();
             return bijenkast;
         }
@@ -55,23 +60,49 @@ namespace BijenkastApi.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public ActionResult<Bijenkast> PostBijenkast(BijenkastDTO bijenkast)
         {
-            Bijenkast aanTeMakenBijenkast = new Bijenkast() { Name = bijenkast.Name };
+            Bijenkast aanTeMakenBijenkast = new Bijenkast(bijenkast.naam,
+            bijenkast.type, bijenkast.aantalhoningkamers, bijenkast.aantalbroedkamers, bijenkast.aantalramenperkamer, bijenkast.bijenras,
+            bijenkast.moergeboortedag, bijenkast.moergeboortemaand, bijenkast.moergeboortejaar,
+            bijenkast.moergemerkt, bijenkast.moergeknipt,
+ bijenkast.moerbevrucht,
+ bijenkast.aanmaakdag, bijenkast.aanmaakmaand, bijenkast.aanmaakjaar
+
+            );
+            Imker imker = _imkerRepository.GetBy(bijenkast.imkerId);
+            imker.bijenkasten.Add(aanTeMakenBijenkast);
             _bijenkastRepository.Add(aanTeMakenBijenkast);
+            _imkerRepository.Update(imker);
             _bijenkastRepository.SaveChanges();
-            return CreatedAtAction(nameof(GetBijenkast), new { id = aanTeMakenBijenkast.Id }, aanTeMakenBijenkast);
+            _imkerRepository.SaveChanges();
+            return aanTeMakenBijenkast;
         }
 
         // PUT: api/Bijenkasten/1
-        [HttpPut("{id}")]
-        public IActionResult PutBijenkast(int id, Bijenkast bijenkast)
+        [HttpPut("{imkerId}/{kastId}")]
+        public ActionResult<Bijenkast> PutBijenkast(int imkerId, int kastId, BijenkastDTO bijenkast)
         {
-            if (id != bijenkast.Id)
-            {
-                return BadRequest();
-            }
-            _bijenkastRepository.Update(bijenkast);
+            if (bijenkast.imkerId != imkerId) return Unauthorized();
+            Bijenkast upTeDatenKast = _bijenkastRepository.GetBy(kastId);
+
+            upTeDatenKast.naam = bijenkast.naam;
+            upTeDatenKast.type = bijenkast.type;
+            upTeDatenKast.aantalhoningkamers = bijenkast.aantalhoningkamers;
+            upTeDatenKast.aantalbroedkamers = bijenkast.aantalbroedkamers;
+            upTeDatenKast.aantalramenperkamer = bijenkast.aantalramenperkamer;
+            upTeDatenKast.bijenras = bijenkast.bijenras;
+            upTeDatenKast.moergeboortedag = bijenkast.moergeboortedag;
+            upTeDatenKast.moergeboortejaar = bijenkast.moergeboortejaar;
+            upTeDatenKast.moergeboortemaand = bijenkast.moergeboortemaand;
+            upTeDatenKast.moergemerkt = bijenkast.moergemerkt;
+            upTeDatenKast.moergeknipt = bijenkast.moergeknipt;
+            upTeDatenKast.moerbevrucht = bijenkast.moerbevrucht;
+            upTeDatenKast.aanmaakdag = bijenkast.aanmaakdag;
+            upTeDatenKast.aanmaakmaand = bijenkast.aanmaakmaand;
+            upTeDatenKast.aanmaakjaar = bijenkast.aanmaakjaar;
+
+            _bijenkastRepository.Update(upTeDatenKast);
             _bijenkastRepository.SaveChanges();
-            return NoContent();
+            return upTeDatenKast;
         }
 
         // DELETE: api/Bijenkasten/5

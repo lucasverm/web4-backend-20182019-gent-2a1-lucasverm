@@ -23,38 +23,24 @@ namespace BijenkastApi.Data
             _dbContext.Database.EnsureDeleted();
             if (_dbContext.Database.EnsureCreated())
             {
-                
-               Bijenkast b = new Bijenkast
-                {
-                    Name = "Spaghetti",
-                    Created = DateTime.Now
-                };
+                Bijenkast b = new Bijenkast("kast in de tuin", "dadant", 1, 1, 10, "buckfast", 26, 5, 1998, true, false, true, 6, 3, 2014);
                 Imker imker = new Imker { Email = "a@a.a", FirstName = "Student", LastName = "Hogent" };
                 await CreateUser(imker.Email, "Aaaaaa123!");
                 imker.bijenkasten.Add(b);
                 _dbContext.Bijenkasten.Add(b);
-                b = new Bijenkast
-                {
-                    Name = "wurtols",
-                    Created = DateTime.Now
-                };
+
+                b = new Bijenkast("kast bij de buren", "simplex", 2, 1, 10, "buckfast", 6, 8, 2017, true, false, true, 3, 4, 2019);
+                imker.bijenkasten.Add(b);
                 _dbContext.Bijenkasten.Add(b);
+
                 imker.bijenkasten.Add(b);
                 _dbContext.Imkers.Add(imker);
 
-                b = new Bijenkast
-                {
-                    Name = "Maca",
-                    Created = DateTime.Now
-                };
-                imker = new Imker { Email = "user2@example.com", FirstName = "Student", LastName = "Hogent" };
+                b = new Bijenkast("kast bij de buren", "simplex", 2, 1, 10, "buckfast", 6, 8, 2017, true, false, true, 3, 4, 2019); imker = new Imker { Email = "user2@example.com", FirstName = "Student", LastName = "Hogent" };
                 await CreateUser(imker.Email, "LucasVermeulen123!");
                 imker.bijenkasten.Add(b);
                 _dbContext.Bijenkasten.Add(b);
                 _dbContext.Imkers.Add(imker);
-
-
-
 
                 _dbContext.SaveChanges();
             }

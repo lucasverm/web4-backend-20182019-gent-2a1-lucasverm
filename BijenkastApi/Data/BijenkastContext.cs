@@ -15,9 +15,9 @@ namespace BijenkastApi.Data
         protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);
-            builder.Entity<Bijenkast>().Property(r => r.Name).IsRequired().HasMaxLength(50);
-            builder.Entity<Bijenkast>().Property(r => r.Id).ValueGeneratedOnAdd();
-            builder.Entity<Bijenkast>().HasKey(r => r.Id);
+            builder.Entity<Bijenkast>().Property(r => r.naam).IsRequired().HasMaxLength(50);
+            builder.Entity<Bijenkast>().Property(r => r.id).ValueGeneratedOnAdd();
+            builder.Entity<Bijenkast>().HasKey(r => r.id);
 
             builder.Entity<Imker>().Property(r => r.ImkerId).ValueGeneratedOnAdd();
             builder.Entity<Imker>().HasKey(r => r.ImkerId);
