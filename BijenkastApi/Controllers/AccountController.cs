@@ -43,19 +43,6 @@ namespace RecipeApi.Controllers
             return user == null;
         }
 
-        [AllowAnonymous]
-        [HttpGet("loggedInUser")]
-        public ActionResult<Imker> loggedInUser(string email)
-        {
-            var user = _imkerRepository.GetBy(email);
-            if(user == null)
-            {
-                return NotFound("De Imker kon niet worden gevonden");
-
-            }
-            return user; 
-        }
-
         /// <summary>
         /// Login
         /// </summary>
@@ -76,7 +63,7 @@ namespace RecipeApi.Controllers
                     return Created("", token); //returns only the token
                 }
             }
-            return BadRequest("test");
+            return BadRequest("De inlog gegevens zijn niet correct!");
         }
 
         /// <summary>

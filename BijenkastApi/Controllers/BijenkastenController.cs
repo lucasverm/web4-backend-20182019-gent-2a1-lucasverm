@@ -41,7 +41,6 @@ namespace BijenkastApi.Controllers
         ///<summary>
         /// Geeft 1 specifieke bijenkast terug dmv een id
         /// </summary>
-        /// ///<param name="imkerId">het id van de imker</param>
         ///<param name="kastId">het id van de bijenkast</param>
         ///<returns>De bijenkast met opgegeven id</returns>
         [HttpGet("{kastId}")]
@@ -67,7 +66,7 @@ namespace BijenkastApi.Controllers
             bijenkast.moergeboortedag, bijenkast.moergeboortemaand, bijenkast.moergeboortejaar,
             bijenkast.moergemerkt, bijenkast.moergeknipt,
  bijenkast.moerbevrucht,
- bijenkast.aanmaakdag, bijenkast.aanmaakmaand, bijenkast.aanmaakjaar
+ bijenkast.aanmaakdag, bijenkast.aanmaakmaand, bijenkast.aanmaakjaar, bijenkast.inspecties
 
             );
             imker.bijenkasten.Add(aanTeMakenBijenkast);
@@ -101,6 +100,7 @@ namespace BijenkastApi.Controllers
             upTeDatenKast.aanmaakdag = bijenkast.aanmaakdag;
             upTeDatenKast.aanmaakmaand = bijenkast.aanmaakmaand;
             upTeDatenKast.aanmaakjaar = bijenkast.aanmaakjaar;
+            upTeDatenKast.inspecties = bijenkast.inspecties;
             _bijenkastRepository.Update(upTeDatenKast);
             _bijenkastRepository.SaveChanges();
             return upTeDatenKast;

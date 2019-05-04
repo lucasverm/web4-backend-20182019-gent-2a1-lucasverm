@@ -19,19 +19,12 @@ namespace BijenkastApi.Repositories
 
         public IEnumerable<Bijenkast> GetAll(int imkerId)
         {
-
-            return _Bijenkasten.Where(i => i.imkerId == imkerId).ToList();
+            return _Bijenkasten.Where(i => i.imkerId == imkerId).Include(t => t.inspecties).ToList();
         }
 
         public Bijenkast GetBy(int id)
         {
-            return _Bijenkasten.SingleOrDefault(r => r.id == id);
-        }
-
-        public bool TryGetBijenkast(int id, out Bijenkast bijenkast)
-        {
-            bijenkast = _context.Bijenkasten.FirstOrDefault(t => t.id == id);
-            return bijenkast != null;
+            return _Bijenkasten.Include(t => t.inspecties).SingleOrDefault(r => r.id == id);
         }
 
         public void Add(Bijenkast bijenkast)

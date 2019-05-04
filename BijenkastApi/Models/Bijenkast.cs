@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -7,6 +8,7 @@ namespace BijenkastApi.Models
     public class Bijenkast
     {
         #region Properties
+
         public int id { get; set; }
 
         [Required]
@@ -31,11 +33,10 @@ namespace BijenkastApi.Models
         public int aanmaakdag { get; set; }
         public int aanmaakmaand { get; set; }
         public int aanmaakjaar { get; set; }
+        public List<Inspectie> inspecties { get; set; }
 
         [ForeignKey("Imker")]
         public int imkerId { get; set; }
-
-
 
         #endregion Properties
 
@@ -43,10 +44,10 @@ namespace BijenkastApi.Models
 
         public Bijenkast()
         {
-
+            this.inspecties = new List<Inspectie>();
         }
 
-        public Bijenkast(string naam, string type, int aantalhoningkamers, int aantalbroedkamers, int aantalramenperkamer, string bijenras, int moergeboortedag, int moergeboortemaand, int moergeboortejaar, bool moergemerkt, bool moergeknipt, bool moerbevrucht, int aanmaakdag, int aanmaakmaand, int aanmaakjaar)
+        public Bijenkast(string naam, string type, int aantalhoningkamers, int aantalbroedkamers, int aantalramenperkamer, string bijenras, int moergeboortedag, int moergeboortemaand, int moergeboortejaar, bool moergemerkt, bool moergeknipt, bool moerbevrucht, int aanmaakdag, int aanmaakmaand, int aanmaakjaar, List<Inspectie> inspecties)
         {
             this.naam = naam;
             this.type = type;
@@ -63,11 +64,8 @@ namespace BijenkastApi.Models
             this.aanmaakdag = aanmaakdag;
             this.aanmaakmaand = aanmaakmaand;
             this.aanmaakjaar = aanmaakjaar;
+            this.inspecties = inspecties;
         }
-
-
-
-
 
         #endregion Constructors
     }

@@ -1,12 +1,12 @@
-﻿using System;
+﻿using BijenkastApi.Models;
+using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
 namespace BijenkastApi.DTOs
 {
     public class BijenkastDTO
     {
-        //public int id { get; set; }
-
         [Required]
         public string naam { get; set; }
 
@@ -24,5 +24,6 @@ namespace BijenkastApi.DTOs
         public int aanmaakdag { get; set; }
         public int aanmaakmaand { get; set; }
         public int aanmaakjaar { get; set; }
+        public List<Inspectie> inspecties { get; set; }
     }
 }
