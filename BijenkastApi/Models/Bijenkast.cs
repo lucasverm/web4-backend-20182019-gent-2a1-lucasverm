@@ -15,7 +15,7 @@ namespace BijenkastApi.Models
         public string naam { get; set; }
 
         public string type { get; set; }
-
+        public string kleur { get; set; }
         public int aantalhoningkamers { get; set; }
 
         public int aantalbroedkamers { get; set; }
@@ -47,10 +47,11 @@ namespace BijenkastApi.Models
             this.inspecties = new List<Inspectie>();
         }
 
-        public Bijenkast(string naam, string type, int aantalhoningkamers, int aantalbroedkamers, int aantalramenperkamer, string bijenras, int moergeboortedag, int moergeboortemaand, int moergeboortejaar, bool moergemerkt, bool moergeknipt, bool moerbevrucht, int aanmaakdag, int aanmaakmaand, int aanmaakjaar, List<Inspectie> inspecties)
+        public Bijenkast(string naam, string type, string kleur, int aantalhoningkamers, int aantalbroedkamers, int aantalramenperkamer, string bijenras, int moergeboortedag, int moergeboortemaand, int moergeboortejaar, bool moergemerkt, bool moergeknipt, bool moerbevrucht, int aanmaakdag, int aanmaakmaand, int aanmaakjaar, List<Inspectie> inspecties)
         {
             this.naam = naam;
             this.type = type;
+            this.kleur = kleur;
             this.aantalhoningkamers = aantalhoningkamers;
             this.aantalbroedkamers = aantalbroedkamers;
             this.aantalramenperkamer = aantalramenperkamer;

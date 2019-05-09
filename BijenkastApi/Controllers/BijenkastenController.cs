@@ -62,7 +62,7 @@ namespace BijenkastApi.Controllers
             Imker imker = _imkerRepository.GetBy(User.Identity.Name);
             if (imker == null) { return Unauthorized(); };
             Bijenkast aanTeMakenBijenkast = new Bijenkast(bijenkast.naam,
-            bijenkast.type, bijenkast.aantalhoningkamers, bijenkast.aantalbroedkamers, bijenkast.aantalramenperkamer, bijenkast.bijenras,
+            bijenkast.type, bijenkast.kleur, bijenkast.aantalhoningkamers, bijenkast.aantalbroedkamers, bijenkast.aantalramenperkamer, bijenkast.bijenras,
             bijenkast.moergeboortedag, bijenkast.moergeboortemaand, bijenkast.moergeboortejaar,
             bijenkast.moergemerkt, bijenkast.moergeknipt,
  bijenkast.moerbevrucht,
@@ -85,8 +85,10 @@ namespace BijenkastApi.Controllers
             if (imker == null) { return Unauthorized(); };
             Bijenkast upTeDatenKast = _bijenkastRepository.GetBy(kastId);
             if (upTeDatenKast.imkerId != imker.ImkerId) return Unauthorized();
+            _bijenkastRepository.DeleteInspecties(upTeDatenKast);
             upTeDatenKast.naam = bijenkast.naam;
             upTeDatenKast.type = bijenkast.type;
+            upTeDatenKast.kleur = bijenkast.kleur;
             upTeDatenKast.aantalhoningkamers = bijenkast.aantalhoningkamers;
             upTeDatenKast.aantalbroedkamers = bijenkast.aantalbroedkamers;
             upTeDatenKast.aantalramenperkamer = bijenkast.aantalramenperkamer;

@@ -42,6 +42,14 @@ namespace BijenkastApi.Repositories
             _Bijenkasten.Remove(bijenkast);
         }
 
+        public void DeleteInspecties(Bijenkast bijenkast)
+        {
+            bijenkast.inspecties.ForEach(t =>
+           {
+               _context.Inspecties.Remove(t);
+           });
+        }
+
         public void SaveChanges()
         {
             _context.SaveChanges();

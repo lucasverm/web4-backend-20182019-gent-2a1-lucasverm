@@ -11,6 +11,7 @@ namespace BijenkastApi.DTOs
         public string naam { get; set; }
 
         public string type { get; set; }
+        public string kleur { get; set; }
         public int aantalhoningkamers { get; set; }
         public int aantalbroedkamers { get; set; }
         public int aantalramenperkamer { get; set; }
