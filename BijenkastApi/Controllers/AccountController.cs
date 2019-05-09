@@ -10,6 +10,7 @@ using System.Text;
 using Microsoft.AspNetCore.Authorization;
 using BijenkastApi.Models;
 using BijenkastApi.DTOs;
+using System.Diagnostics;
 
 namespace RecipeApi.Controllers
 {
@@ -41,6 +42,27 @@ namespace RecipeApi.Controllers
         {
             var user = await _userManager.FindByNameAsync(email);
             return user == null;
+        }
+
+        [HttpGet("checkusernamevoorwijzigen")]
+        public async Task<ActionResult<Boolean>> CheckAvailableUserNameForChange(string email)
+        {
+            var uitvoer = false;
+            var user = await _userManager.FindByNameAsync(email);
+            if (user == null)
+            {
+                uitvoer = true;
+            }
+            else
+            {
+                var aangemeldeGebruiker = await _userManager.FindByNameAsync(User.Identity.Name);
+                if (user == aangemeldeGebruiker)
+                {
+                    uitvoer = true;
+                }
+            }
+
+            return uitvoer;
         }
 
         [HttpGet("geefimker")]
@@ -120,6 +142,23 @@ namespace RecipeApi.Controllers
               signingCredentials: creds);
 
             return new JwtSecurityTokenHandler().WriteToken(token);
+        }
+
+        [HttpPut]
+        public async Task<ActionResult<Imker>> PutImkerAsync(ImkerDTO imkerDTO)
+        {
+            Imker imker = _imkerRepository.GetBy(User.Identity.Name);
+            if (imker == null) { return Unauthorized(); };
+            imker.achternaam = imkerDTO.achternaam;
+            imker.voornaam = imkerDTO.voornaam;
+            var user = await _userManager.FindByEmailAsync(imker.email);
+            user.UserName = imkerDTO.email;
+            user.Email = imkerDTO.email;
+            await _userManager.UpdateAsync(user);
+            imker.email = imkerDTO.email;
+            _imkerRepository.Update(imker);
+            _imkerRepository.SaveChanges();
+            return imker;
         }
     }
 }
