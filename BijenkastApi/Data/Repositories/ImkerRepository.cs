@@ -17,7 +17,7 @@ namespace BijenkastApi.Data.Repositories
 
         public Imker GetBy(string email)
         {
-            return _imkers.Where(c => c.Email == email).SingleOrDefault();
+            return _imkers.Where(c => c.email == email).SingleOrDefault();
         }
 
         public Imker GetBy(int id)

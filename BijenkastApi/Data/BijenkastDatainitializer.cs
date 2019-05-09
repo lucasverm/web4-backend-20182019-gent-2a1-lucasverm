@@ -25,8 +25,8 @@ namespace BijenkastApi.Data
                 Inspectie inspectie = new Inspectie(26, 5, 1998, "Dit is een test Notitie 1");
                 _dbContext.Inspecties.Add(inspectie);
                 b.inspecties.Add(inspectie);
-                Imker imker = new Imker { Email = "a@a.a", FirstName = "Student", LastName = "Hogent" };
-                await CreateUser(imker.Email, "Aaaaaa123!");
+                Imker imker = new Imker { email = "a@a.a", voornaam = "Student", achternaam = "Hogent" };
+                await CreateUser(imker.email, "Aaaaaa123!");
                 imker.bijenkasten.Add(b);
                 _dbContext.Bijenkasten.Add(b);
 
@@ -44,8 +44,8 @@ namespace BijenkastApi.Data
                 inspectie = new Inspectie(26, 5, 1998, "Dit is een test Notitie 3");
                 _dbContext.Inspecties.Add(inspectie);
                 b.inspecties.Add(inspectie);
-                imker = new Imker { Email = "user2@example.com", FirstName = "Student", LastName = "Hogent" };
-                await CreateUser(imker.Email, "LucasVermeulen123!");
+                imker = new Imker { email = "user2@example.com", voornaam = "Student", achternaam = "Hogent" };
+                await CreateUser(imker.email, "LucasVermeulen123!");
                 imker.bijenkasten.Add(b);
                 _dbContext.Bijenkasten.Add(b);
                 _dbContext.Imkers.Add(imker);

@@ -43,6 +43,17 @@ namespace RecipeApi.Controllers
             return user == null;
         }
 
+        [HttpGet("geefimker")]
+        public ActionResult<Imker> geefImker()
+        {
+            Imker imker = _imkerRepository.GetBy(User.Identity.Name);
+            if (imker == null)
+            {
+                return Unauthorized();
+            }
+            return imker;
+        }
+
         /// <summary>
         /// Login
         /// </summary>
@@ -76,7 +87,7 @@ namespace RecipeApi.Controllers
         public async Task<ActionResult<String>> Register(RegisterDTO model)
         {
             IdentityUser user = new IdentityUser { UserName = model.Email, Email = model.Email };
-            Imker imker = new Imker { Email = model.Email, FirstName = model.FirstName, LastName = model.LastName };
+            Imker imker = new Imker { email = model.Email, voornaam = model.FirstName, achternaam = model.LastName };
             var result = await _userManager.CreateAsync(user, model.Password);
 
             if (result.Succeeded)

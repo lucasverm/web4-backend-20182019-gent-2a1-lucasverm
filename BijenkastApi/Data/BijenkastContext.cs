@@ -23,9 +23,9 @@ namespace BijenkastApi.Data
             builder.Entity<Imker>().Property(r => r.ImkerId).ValueGeneratedOnAdd();
             builder.Entity<Imker>().HasKey(r => r.ImkerId);
 
-            builder.Entity<Imker>().Property(c => c.LastName).IsRequired().HasMaxLength(50);
-            builder.Entity<Imker>().Property(c => c.FirstName).IsRequired().HasMaxLength(50);
-            builder.Entity<Imker>().Property(c => c.Email).IsRequired().HasMaxLength(100);
+            builder.Entity<Imker>().Property(c => c.achternaam).IsRequired().HasMaxLength(50);
+            builder.Entity<Imker>().Property(c => c.voornaam).IsRequired().HasMaxLength(50);
+            builder.Entity<Imker>().Property(c => c.email).IsRequired().HasMaxLength(100);
             builder.Entity<Imker>().HasMany(c => c.bijenkasten).WithOne();
 
             builder.Entity<Inspectie>().Property(r => r.id).ValueGeneratedOnAdd();
