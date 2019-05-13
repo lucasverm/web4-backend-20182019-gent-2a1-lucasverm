@@ -172,6 +172,27 @@ namespace RecipeApi.Controllers
             return BadRequest();
         }
 
+        [HttpPost("wijzigwachtwoord")]
+        public async Task<ActionResult<Boolean>> changePassword(WachtwoordDTO wachtwoorden)
+        { 
+            if(wachtwoorden.wachtwoord != wachtwoorden.wachtwoordbevestiging)
+            {
+                return BadRequest();
+            }
+            var user = await _userManager.FindByEmailAsync(User.Identity.Name);
+            if (user == null)
+            {
+                return NotFound();
+            }
+            user.PasswordHash = _userManager.PasswordHasher.HashPassword(user, wachtwoorden.wachtwoord);
+            var result = await _userManager.UpdateAsync(user);
+            if (result.Succeeded)
+            {
+                return true;
+            }
+            return false;
+        }
+
         private String GetToken(IdentityUser user)
         {
             // Create the token
