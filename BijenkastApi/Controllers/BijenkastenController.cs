@@ -19,11 +19,13 @@ namespace BijenkastApi.Controllers
     {
         private readonly IBijenkastRepository _bijenkastRepository;
         private readonly IImkerRepository _imkerRepository;
+        private readonly IInspectieRepository _inspectieRepository;
 
-        public BijenkastenController(IBijenkastRepository context, IImkerRepository imkerRepository)
+        public BijenkastenController(IBijenkastRepository context, IImkerRepository imkerRepository, IInspectieRepository inspectieRepository)
         {
             _bijenkastRepository = context;
             _imkerRepository = imkerRepository;
+            _inspectieRepository = inspectieRepository;
         }
 
         ///<summary>
@@ -85,7 +87,6 @@ namespace BijenkastApi.Controllers
             if (imker == null) { return Unauthorized(); };
             Bijenkast upTeDatenKast = _bijenkastRepository.GetBy(kastId);
             if (upTeDatenKast.imkerId != imker.ImkerId) return Unauthorized();
-            _bijenkastRepository.DeleteInspecties(upTeDatenKast);
             upTeDatenKast.naam = bijenkast.naam;
             upTeDatenKast.type = bijenkast.type;
             upTeDatenKast.kleur = bijenkast.kleur;
@@ -102,6 +103,22 @@ namespace BijenkastApi.Controllers
             upTeDatenKast.aanmaakdag = bijenkast.aanmaakdag;
             upTeDatenKast.aanmaakmaand = bijenkast.aanmaakmaand;
             upTeDatenKast.aanmaakjaar = bijenkast.aanmaakjaar;
+            upTeDatenKast.inspecties.Clear();
+            bijenkast.inspecties.ForEach(t =>
+            {
+                Inspectie i = _inspectieRepository.GetBy(t.id);
+                if (i == null)
+                {
+                    _inspectieRepository.Add(t);
+                    _inspectieRepository.SaveChanges();
+                }
+                else
+                {
+                    _inspectieRepository.Update(t);
+                    _inspectieRepository.SaveChanges();
+                }
+            });
+            upTeDatenKast.inspecties.Clear();
             upTeDatenKast.inspecties = bijenkast.inspecties;
             _bijenkastRepository.Update(upTeDatenKast);
             _bijenkastRepository.SaveChanges();

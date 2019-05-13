@@ -17,6 +17,8 @@ namespace BijenkastApi.Models
 
         public string email { get; set; }
 
+        public bool facebookimker { get; set; }
+
         public List<Bijenkast> bijenkasten { get; set; }
 
         #endregion Properties

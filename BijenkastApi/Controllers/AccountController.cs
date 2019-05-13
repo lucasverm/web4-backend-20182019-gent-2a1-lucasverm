@@ -11,6 +11,7 @@ using Microsoft.AspNetCore.Authorization;
 using BijenkastApi.Models;
 using BijenkastApi.DTOs;
 using System.Diagnostics;
+using System.Net.Http;
 
 namespace RecipeApi.Controllers
 {
@@ -34,6 +35,55 @@ namespace RecipeApi.Controllers
             _userManager = userManager;
             _imkerRepository = imkerRepository;
             _config = config;
+        }
+
+        private async Task<FacebookImkerDTO> VerifyFacebookAccessToken(string accessToken)
+        {
+            FacebookImkerDTO fbUser = null;
+            var path = "https://graph.facebook.com/me?fields=email,first_name,last_name&access_token=" + accessToken;
+            var client = new HttpClient();
+            var uri = new Uri(path);
+            var response = await client.GetAsync(uri);
+            if (response.IsSuccessStatusCode)
+            {
+                var content = await response.Content.ReadAsStringAsync();
+                fbUser = Newtonsoft.Json.JsonConvert.DeserializeObject<FacebookImkerDTO>(content);
+                return fbUser;
+            }
+            return null;
+
+           
+        }
+
+        [HttpPost("loginfacebook")]
+        [AllowAnonymous]
+        public async Task<string> GetTokenFromFacebook(FacebookTokenDTO facebookTokenDTO)
+        {
+
+            var facebookUser = await VerifyFacebookAccessToken(facebookTokenDTO.token);
+            var systemUser = await _userManager.FindByNameAsync(facebookUser.email);
+            if (systemUser != null)
+            {
+                string uitvoerToken = GetToken(systemUser);
+                return uitvoerToken;
+            }
+            else
+            {
+                IdentityUser user = new IdentityUser { UserName = facebookUser.email, Email = facebookUser.email };
+                Imker imker = new Imker { email = facebookUser.email, voornaam = facebookUser.voornaam, achternaam = facebookUser.achternaam, facebookimker = true };
+                var result = await _userManager.CreateAsync(user);
+
+                if (result.Succeeded)
+                {
+                    _imkerRepository.Add(imker);
+                    _imkerRepository.SaveChanges();
+                    string uitvoerToken = GetToken(user);
+                    return uitvoerToken;
+                }
+
+            }
+            return null;
+           
         }
 
         [AllowAnonymous]
@@ -109,7 +159,7 @@ namespace RecipeApi.Controllers
         public async Task<ActionResult<String>> Register(RegisterDTO model)
         {
             IdentityUser user = new IdentityUser { UserName = model.Email, Email = model.Email };
-            Imker imker = new Imker { email = model.Email, voornaam = model.FirstName, achternaam = model.LastName };
+            Imker imker = new Imker { email = model.Email, voornaam = model.FirstName, achternaam = model.LastName, facebookimker = false };
             var result = await _userManager.CreateAsync(user, model.Password);
 
             if (result.Succeeded)

@@ -13,6 +13,13 @@ namespace BijenkastApi.Models
         public int maand { get; set; }
         public int jaar { get; set; }
         public string notitie { get; set; }
+        public bool eitjes { get; set; }
+        public bool larven { get; set; }
+        public bool poppen { get; set; }
+        public int ramenmetbijen { get; set; }
+        public bool moeraanwezig { get; set; }
+        public bool honing { get; set; }
+        public bool stuifmeel { get; set; }
 
         [ForeignKey("Kast")]
         public int kastId { get; set; }

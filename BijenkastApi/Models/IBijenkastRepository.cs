@@ -16,6 +16,5 @@ namespace BijenkastApi.Models
 
         void SaveChanges();
 
-        void DeleteInspecties(Bijenkast bijenkast);
     }
 }

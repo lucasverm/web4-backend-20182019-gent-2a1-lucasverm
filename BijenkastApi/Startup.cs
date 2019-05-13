@@ -37,6 +37,7 @@ namespace BijenkastApi
             services.AddScoped<BijenkastDatainitializer>();
             services.AddScoped<IBijenkastRepository, BijenkastRepository>();
             services.AddScoped<IImkerRepository, ImkerRepository>();
+            services.AddScoped<IInspectieRepository, InspectieRepository>();
             Microsoft.IdentityModel.Logging.IdentityModelEventSource.ShowPII = true;
             services.AddOpenApiDocument(c =>
             {

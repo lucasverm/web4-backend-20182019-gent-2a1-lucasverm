@@ -9,7 +9,6 @@ namespace BijenkastApi.DTOs
     {
         [Required]
         public string voornaam { get; set; }
-
         public string achternaam { get; set; }
         public string email { get; set; }
     }
