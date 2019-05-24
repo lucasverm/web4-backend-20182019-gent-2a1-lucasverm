@@ -21,33 +21,33 @@ namespace BijenkastApi.Data
             _dbContext.Database.EnsureDeleted();
             if (_dbContext.Database.EnsureCreated())
             {
-                Bijenkast b = new Bijenkast("kast in de tuin", "dadant", "#269d2f", 1, 1, 10, "buckfast", 26, 5, 1998, true, false, true, 6, 3, 2014, new List<Inspectie>());
-                Inspectie inspectie = new Inspectie(26, 5, 1998, "Dit is een test Notitie 1");
+                Bijenkast b = new Bijenkast("Productievolk", "dadant", "#e9f900", 1, 1, 10, "buckfast", 5, 5, 2018, true, false, true, 6, 3, 2019, new List<Inspectie>());
+                Inspectie inspectie = new Inspectie(24, 4, 2019, "Dit is een eerste inspectie. Het bijenvolk ziet er goed uit!");
+                inspectie.eitjes = true;
+                inspectie.larven = true;
+                inspectie.poppen = true;
+                inspectie.moeraanwezig = true;
+                inspectie.ramenmetbijen = 6;
                 _dbContext.Inspecties.Add(inspectie);
                 b.inspecties.Add(inspectie);
-                Imker imker = new Imker { email = "a@a.a", voornaam = "Student", achternaam = "Hogent", facebookimker = false };
-                await CreateUser(imker.email, "Aaaaaa123!");
+                Imker imker = new Imker { email = "web4@hogent.be", voornaam = "Lucas", achternaam = "Vermeulen", facebookimker = false };
+                await CreateUser(imker.email, "GelukkigGeenNetbeans123@!");
                 imker.bijenkasten.Add(b);
                 _dbContext.Bijenkasten.Add(b);
 
-                b = new Bijenkast("kast bij de buren", "simplex", "#269d2f", 2, 1, 10, "buckfast", 6, 8, 2017, true, false, true, 3, 4, 2019, new List<Inspectie>());
-                inspectie = new Inspectie(26, 5, 1998, "Dit is een test Notitie 2");
+                b = new Bijenkast("Aflegger", "simplex", "#7affef", 1, 0, 6, "buckfast", 20, 5, 2019, true, false, true, 3, 4, 2019, new List<Inspectie>());
+                inspectie = new Inspectie(24, 4, 2019, "Opletten! Het volk zou te weinig voer kunnen hebben!");
+                inspectie.eitjes = true;
+                inspectie.larven = true;
+                inspectie.poppen = false;
+                inspectie.moeraanwezig = true;
+                inspectie.ramenmetbijen = 2;
                 _dbContext.Inspecties.Add(inspectie);
                 b.inspecties.Add(inspectie);
                 imker.bijenkasten.Add(b);
                 _dbContext.Bijenkasten.Add(b);
 
                 imker.bijenkasten.Add(b);
-                _dbContext.Imkers.Add(imker);
-
-                b = new Bijenkast("kast bij de buren", "simplex", "#269d2f", 2, 1, 10, "buckfast", 6, 8, 2017, true, false, true, 3, 4, 2019, new List<Inspectie>());
-                inspectie = new Inspectie(26, 5, 1998, "Dit is een test Notitie 3");
-                _dbContext.Inspecties.Add(inspectie);
-                b.inspecties.Add(inspectie);
-                imker = new Imker { email = "user2@example.com", voornaam = "Student", achternaam = "Hogent", facebookimker = false };
-                await CreateUser(imker.email, "LucasVermeulen123!");
-                imker.bijenkasten.Add(b);
-                _dbContext.Bijenkasten.Add(b);
                 _dbContext.Imkers.Add(imker);
 
                 _dbContext.SaveChanges();
