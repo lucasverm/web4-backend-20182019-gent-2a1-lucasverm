@@ -2,7 +2,7 @@
 ## Opdracht WebApplicaties 4: Backend
 ## Lucas Vermeulen - 2A1
 TestUser: web4@hogent.be<br>
-TestPassword: gelukkiggeennetbeans123!<br>
+TestPassword: GelukkigGeenNetbeans123@!<br>
 
 Frontend: https://github.com/Web-IV/web4-20182019-gent-2a1-lucasverm
 
